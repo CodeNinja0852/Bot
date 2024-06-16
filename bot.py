@@ -237,7 +237,7 @@ async def phone_number(update: Update, context):
     )
     return BIRTHDATE
 
-# Add similar handlers for the other fields:
+
 async def birthdate(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
@@ -440,26 +440,24 @@ async def photo_upload(update: Update, context: CallbackContext):
         return await cancel(update, context)
 
     if update.message.photo:
-        # Get the file_id of the largest photo (last in the list)
         file_id = update.message.photo[-1].file_id
         new_file = context.bot.get_file(file_id)
         
-        # Download photo and save it
-        photo_path = f'photos/{file_id}.jpg'  # Assuming 'photos' directory exists
+        photo_path = f'photos/{file_id}.jpg' 
         new_file.download(photo_path)
-        context.user_data['photo_upload'] = photo_path  # Save path to database
+        context.user_data['photo_upload'] = photo_path  #
 
         await update.message.reply_text(
             translations['source_info'][lang],
             reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
         )
-        return SOURCE_INFO  # Proceed to next state
+        return SOURCE_INFO  
     else:
         await update.message.reply_text(
             "Please upload a photo. You can send it again.",
             reply_markup=ReplyKeyboardRemove()
         )
-        return PHOTO_UPLOAD  # Stay in the same state to re-attempt photo upload
+        return PHOTO_UPLOAD  
 
 
 async def source_info(update: Update, context):
@@ -505,7 +503,7 @@ async def confirm(update: Update, context: CallbackContext):
     elif text == 'yes':
         user_data = context.user_data
         
-        photo_path = user_data.get('photo_upload', None)  # Retrieve photo path
+        photo_path = user_data.get('photo_upload', None) 
 
         c.execute('''
             INSERT INTO users (full_name, age, address, proficiency, phone_number, birthdate, gender, student_status, education, marital_status, work_history, language_skills, audio_introduction, positive_skills, platform_experience, platform_details, software_experience, photo_upload, source_info, data_processing_consent, completed)
