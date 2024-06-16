@@ -114,12 +114,24 @@ translations = {
     'cancelled': {
         'uz': "Bekor qilindi.",
         'ru': "Отменено.",
+    },
+    'beginner': {
+        'ru': 'Начинающий',
+        'uz': 'Boshlovchi'
+    },
+    'intermediate': {
+        'ru': 'Средний',
+        'uz': 'Oʻrta'
+    },
+    'advanced': {
+        'ru': 'Продвинутый',
+        'uz': 'Yuqori'
     }
 }
 
 async def start(update: Update, context):
     await update.message.reply_text(
-        "Please choose your language / Пожалуйста, выберите ваш язык",
+        "Iltimos tilni tanlang / Пожалуйста, выберите ваш язык",
         reply_markup=ReplyKeyboardMarkup([["Uzbek", "Russian"]], resize_keyboard=True, one_time_keyboard=True)
     )
     return LANGUAGE
@@ -148,27 +160,28 @@ async def start_application(update: Update, context: CallbackContext):
     return FULL_NAME
 
 
-async def full_name(update: Update, context):
+async def full_name(update: Update, context: CallbackContext):
     logger.info("Inside full_name handler")
     print("Inside full_name function")
     context.user_data['full_name'] = update.message.text
-    lang = context.user_data.get('language')
-    
+    lang = context.user_data.get('language', 'ru')  
+    back_button = 'Назад 👈' if lang == 'ru' else 'Orqaga 👈'
+    cancel_button = 'Отмена ❌' if lang == 'ru' else 'Bekor qilish ❌'
     await update.message.reply_text(
         translations['age'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button, cancel_button]], resize_keyboard=True, one_time_keyboard=True)
     )
     return AGE
 
 
 
-async def age(update: Update, context):
-    lang = context.user_data['language']
+async def age(update: Update, context: CallbackContext):
+    lang = context.user_data.get('language', 'ru') 
     text = update.message.text.lower()
     
-    if text == 'back 👈':
+    if text == back_button(lang).lower():
         return await start_application(update, context)
-    elif text == 'cancel ❌':
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     try:
@@ -178,29 +191,52 @@ async def age(update: Update, context):
         context.user_data['age'] = age
         await update.message.reply_text(
             translations['address'][lang],
-            reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+            reply_markup=ReplyKeyboardMarkup(
+                [[back_button(lang), cancel_button(lang)]], 
+                resize_keyboard=True, 
+                one_time_keyboard=True
+            )
         )
         return ADDRESS
     except ValueError:
         await update.message.reply_text(
             translations['age'][lang],
-            reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+            reply_markup=ReplyKeyboardMarkup(
+                [[back_button(lang), cancel_button(lang)]], 
+                resize_keyboard=True, 
+                one_time_keyboard=True
+            )
         )
         return AGE
 
-async def address(update: Update, context):
-    lang = context.user_data['language']
+
+def back_button(lang):
+    return 'Назад 👈' if lang == 'ru' else 'Orqaga 👈'
+
+def cancel_button(lang):
+    return 'Отмена ❌' if lang == 'ru' else 'Bekor qilish ❌'
+
+
+async def address(update: Update, context: CallbackContext):
+    lang = context.user_data.get('language', 'ru')  
     text = update.message.text.lower()
     
-    if text == 'back 👈':
-        return await age(update, context)
-    elif text == 'cancel ❌':
-        return await cancel(update, context)
+    if text in [back_button(lang).lower(), cancel_button(lang).lower()]:
+        if text == back_button(lang).lower():
+            return await age(update, context)
+        elif text == cancel_button(lang).lower():
+            return await cancel(update, context)
 
     context.user_data['address'] = update.message.text
+    proficiency_buttons = [
+    [translations['beginner'][lang], translations['intermediate'][lang], translations['advanced'][lang]]]
     await update.message.reply_text(
         translations['proficiency'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Beginner', 'Intermediate', 'Advanced'], ['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup(
+            [[proficiency_buttons], [back_button(lang), cancel_button(lang)]], 
+            resize_keyboard=True, 
+            one_time_keyboard=True
+        )
     )
     return PROFICIENCY
 
@@ -208,15 +244,15 @@ async def proficiency(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
     
-    if text == 'back 👈':
-        return await address(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['proficiency'] = update.message.text
     await update.message.reply_text(
         translations['phone_number'][lang],
-        reply_markup=ReplyKeyboardMarkup([[KeyboardButton('Share Contact', request_contact=True)], ['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return PHONE_NUMBER
 
@@ -224,17 +260,15 @@ async def phone_number(update: Update, context: CallbackContext):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if update.message.contact:
-        context.user_data['phone_number'] = update.message.contact.phone_number
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
-    elif text == 'back 👈':
-        return await proficiency(update, context)
     else:
         context.user_data['phone_number'] = text
     await update.message.reply_text(
         translations['birthdate'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return BIRTHDATE
 
@@ -243,15 +277,16 @@ async def birthdate(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await phone_number(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['birthdate'] = update.message.text
+    gender_options = ['Мужчина', 'Женщина'] if lang == 'ru' else ['Erkak', 'Ayol']
     await update.message.reply_text(
         translations['gender'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Male', 'Female'], ['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([gender_options, [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return GENDER
 
@@ -259,15 +294,16 @@ async def gender(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await birthdate(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['gender'] = update.message.text
+    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Ha', 'Yoʻq']
     await update.message.reply_text(
         translations['student_status'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Yes', 'No'], ['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[yes_or_no], [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return STUDENT_STATUS
 
@@ -275,15 +311,15 @@ async def student_status(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await gender(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['student_status'] = update.message.text
     await update.message.reply_text(
         translations['education'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return EDUCATION
 
@@ -291,15 +327,15 @@ async def education(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await student_status(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['education'] = update.message.text
     await update.message.reply_text(
         translations['marital_status'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return MARITAL_STATUS
 
@@ -307,15 +343,15 @@ async def marital_status(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await education(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['marital_status'] = update.message.text
     await update.message.reply_text(
         translations['work_history'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return WORK_HISTORY
 
@@ -323,15 +359,15 @@ async def work_history(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await marital_status(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['work_history'] = update.message.text
     await update.message.reply_text(
         translations['language_skills'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return LANGUAGE_SKILLS
 
@@ -339,15 +375,15 @@ async def language_skills(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await work_history(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
-
+    
     context.user_data['language_skills'] = update.message.text
     await update.message.reply_text(
         translations['audio_introduction'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return AUDIO_INTRODUCTION
 
@@ -355,9 +391,9 @@ async def audio_introduction(update: Update, context: CallbackContext):
     lang = context.user_data.get('language', 'en')
     text = update.message.text.lower() if update.message.text else ''
 
-    if text == 'back 👈':
-        return await language_skills(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     if update.message.voice:
@@ -371,7 +407,7 @@ async def audio_introduction(update: Update, context: CallbackContext):
 
             await update.message.reply_text(
                 translations['positive_skills'][lang],
-                reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+                reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
             )
             return POSITIVE_SKILLS  
 
@@ -389,15 +425,15 @@ async def positive_skills(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await audio_introduction(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
-
+    
     context.user_data['positive_skills'] = update.message.text
     await update.message.reply_text(
         translations['platform_experience'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return PLATFORM_EXPERIENCE
 
@@ -405,15 +441,15 @@ async def platform_experience(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await positive_skills(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['platform_experience'] = update.message.text
     await update.message.reply_text(
         translations['platform_details'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return PLATFORM_DETAILS
 
@@ -421,15 +457,15 @@ async def platform_details(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await platform_experience(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['platform_details'] = update.message.text
     await update.message.reply_text(
         translations['software_experience'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return SOFTWARE_EXPERIENCE
 
@@ -437,15 +473,15 @@ async def software_experience(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await platform_details(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['software_experience'] = update.message.text
     await update.message.reply_text(
         translations['photo_upload'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return PHOTO_UPLOAD
 
@@ -461,18 +497,16 @@ async def photo_upload(update: Update, context: CallbackContext):
             await file.download_to_drive(file_path)
             context.user_data['photo_path'] = file_path
             await update.message.reply_text(
-                "Photo uploaded successfully!",
-                reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+                reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
             )
             return SOURCE_INFO 
 
         except Exception as e:
-            await update.message.reply_text(f"Failed to process the photo: {e}")
+            await update.message.reply_text(f" {e}")
             return PHOTO_UPLOAD 
 
     else:
         await update.message.reply_text(
-            "Please upload a photo. You can send it again.",
             reply_markup=ReplyKeyboardRemove()
         )
         return PHOTO_UPLOAD 
@@ -481,15 +515,16 @@ async def source_info(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await photo_upload(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['source_info'] = update.message.text
+    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Ha', 'Yoʻq']
     await update.message.reply_text(
         translations['data_processing_consent'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Yes', 'No'], ['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[yes_or_no], [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return DATA_PROCESSING_CONSENT
 
@@ -497,15 +532,16 @@ async def data_processing_consent(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await source_info(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
 
     context.user_data['data_processing_consent'] = update.message.text
+    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Ha', 'Yoʻq']
     await update.message.reply_text(
         translations['confirm'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Yes', 'No'], ['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup([[yes_or_no], [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
     )
     return CONFIRM
 
@@ -513,9 +549,9 @@ async def confirm(update: Update, context: CallbackContext):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
-    if text == 'back 👈':
-        return await data_processing_consent(update, context)
-    elif text == 'cancel ❌':
+    if text == back_button(lang).lower():
+        return await start_application(update, context)
+    elif text == cancel_button(lang).lower():
         return await cancel(update, context)
     elif text == 'yes':
         user_data = context.user_data
