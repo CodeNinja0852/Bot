@@ -2,8 +2,10 @@ import logging
 from telegram import Update, ReplyKeyboardMarkup, ReplyKeyboardRemove, KeyboardButton
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ConversationHandler, filters, CallbackContext
 import sqlite3
+from telegram.constants import ParseMode
 from config import BOT_TOKEN
 from database import conn, c
+import os
 conn = sqlite3.connect('user_data.db')
 c = conn.cursor()
 
@@ -218,19 +220,18 @@ async def proficiency(update: Update, context):
     )
     return PHONE_NUMBER
 
-async def phone_number(update: Update, context):
+async def phone_number(update: Update, context: CallbackContext):
     lang = context.user_data['language']
+    text = update.message.text.lower()
+
     if update.message.contact:
         context.user_data['phone_number'] = update.message.contact.phone_number
+    elif text == 'cancel ❌':
+        return await cancel(update, context)
+    elif text == 'back 👈':
+        return await proficiency(update, context)
     else:
-        text = update.message.text.lower()
-        if text == 'cancel ❌':
-            return await cancel(update, context)
-        elif text == 'back 👈':
-            return await proficiency(update, context)
-        else:
-            context.user_data['phone_number'] = update.message.text
-
+        context.user_data['phone_number'] = text
     await update.message.reply_text(
         translations['birthdate'][lang],
         reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
@@ -350,22 +351,40 @@ async def language_skills(update: Update, context):
     )
     return AUDIO_INTRODUCTION
 
-async def audio_introduction(update: Update, context):
-    lang = context.user_data['language']
-    text = update.message.text.lower()
+async def audio_introduction(update: Update, context: CallbackContext):
+    lang = context.user_data.get('language', 'en')
+    text = update.message.text.lower() if update.message.text else ''
 
     if text == 'back 👈':
         return await language_skills(update, context)
     elif text == 'cancel ❌':
         return await cancel(update, context)
 
-    context.user_data['audio_introduction'] = update.message.text
-    await update.message.reply_text(
-        translations['positive_skills'][lang],
-        reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
-    )
-    return POSITIVE_SKILLS
+    if update.message.voice:
+        voice_file_id = update.message.voice.file_id
+        try:
+            voice = await context.bot.get_file(voice_file_id)
+            voice_file_path = os.path.join('audio', f'{voice_file_id}.ogg')
+            os.makedirs('audio', exist_ok=True)
+            await voice.download_to_drive(voice_file_path)
+            context.user_data['audio_introduction'] = voice_file_path
 
+            await update.message.reply_text(
+                translations['positive_skills'][lang],
+                reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+            )
+            return POSITIVE_SKILLS  
+
+        except Exception as e:
+            await update.message.reply_text(f"Failed to process the audio: {e}")
+            return AUDIO_INTRODUCTION 
+
+    else:
+        await update.message.reply_text(
+            "Please record an audio introduction. You can send it again.",
+            reply_markup=ReplyKeyboardRemove()
+        )
+        return AUDIO_INTRODUCTION  
 async def positive_skills(update: Update, context):
     lang = context.user_data['language']
     text = update.message.text.lower()
@@ -431,34 +450,32 @@ async def software_experience(update: Update, context):
     return PHOTO_UPLOAD
 
 async def photo_upload(update: Update, context: CallbackContext):
-    lang = context.user_data['language']
-    text = update.message.text.lower()
-
-    if text == 'back 👈':
-        return await software_experience(update, context)
-    elif text == 'cancel ❌':
-        return await cancel(update, context)
+    lang = context.user_data.get('language', 'en')
 
     if update.message.photo:
         file_id = update.message.photo[-1].file_id
-        new_file = context.bot.get_file(file_id)
-        
-        photo_path = f'photos/{file_id}.jpg' 
-        new_file.download(photo_path)
-        context.user_data['photo_upload'] = photo_path  #
+        try:
+            file = await context.bot.get_file(file_id)
+            file_path = os.path.join('photos', f'{file_id}.jpg')
+            os.makedirs('photos', exist_ok=True)
+            await file.download_to_drive(file_path)
+            context.user_data['photo_path'] = file_path
+            await update.message.reply_text(
+                "Photo uploaded successfully!",
+                reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
+            )
+            return SOURCE_INFO 
 
-        await update.message.reply_text(
-            translations['source_info'][lang],
-            reply_markup=ReplyKeyboardMarkup([['Back 👈', 'Cancel ❌']], resize_keyboard=True, one_time_keyboard=True)
-        )
-        return SOURCE_INFO  
+        except Exception as e:
+            await update.message.reply_text(f"Failed to process the photo: {e}")
+            return PHOTO_UPLOAD 
+
     else:
         await update.message.reply_text(
             "Please upload a photo. You can send it again.",
             reply_markup=ReplyKeyboardRemove()
         )
-        return PHOTO_UPLOAD  
-
+        return PHOTO_UPLOAD 
 
 async def source_info(update: Update, context):
     lang = context.user_data['language']
@@ -503,7 +520,7 @@ async def confirm(update: Update, context: CallbackContext):
     elif text == 'yes':
         user_data = context.user_data
         
-        photo_path = user_data.get('photo_upload', None) 
+        photo_path = user_data.get('photo_path', None) 
 
         c.execute('''
             INSERT INTO users (full_name, age, address, proficiency, phone_number, birthdate, gender, student_status, education, marital_status, work_history, language_skills, audio_introduction, positive_skills, platform_experience, platform_details, software_experience, photo_upload, source_info, data_processing_consent, completed)
@@ -550,12 +567,12 @@ def main():
             MARITAL_STATUS: [MessageHandler(filters.TEXT & ~filters.COMMAND, marital_status)],
             WORK_HISTORY: [MessageHandler(filters.TEXT & ~filters.COMMAND, work_history)],
             LANGUAGE_SKILLS: [MessageHandler(filters.TEXT & ~filters.COMMAND, language_skills)],
-            AUDIO_INTRODUCTION: [MessageHandler(filters.TEXT & ~filters.COMMAND, audio_introduction)],
+            AUDIO_INTRODUCTION: [MessageHandler(filters.VOICE & ~filters.COMMAND, audio_introduction)],
             POSITIVE_SKILLS: [MessageHandler(filters.TEXT & ~filters.COMMAND, positive_skills)],
             PLATFORM_EXPERIENCE: [MessageHandler(filters.TEXT & ~filters.COMMAND, platform_experience)],
             PLATFORM_DETAILS: [MessageHandler(filters.TEXT & ~filters.COMMAND, platform_details)],
             SOFTWARE_EXPERIENCE: [MessageHandler(filters.TEXT & ~filters.COMMAND, software_experience)],
-            PHOTO_UPLOAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, photo_upload)],
+            PHOTO_UPLOAD: [MessageHandler(filters.PHOTO & ~filters.COMMAND, photo_upload)],
             SOURCE_INFO: [MessageHandler(filters.TEXT & ~filters.COMMAND, source_info)],
             DATA_PROCESSING_CONSENT: [MessageHandler(filters.TEXT & ~filters.COMMAND, data_processing_consent)],
             CONFIRM: [MessageHandler(filters.TEXT & ~filters.COMMAND, confirm)],

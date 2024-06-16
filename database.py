@@ -24,7 +24,7 @@ def setup_database():
             platform_experience TEXT NOT NULL,
             platform_details TEXT NOT NULL,
             software_experience TEXT NOT NULL,
-            photo_upload TEXT NOT NULL,  
+            photo_upload TEXT,  
             source_info TEXT NOT NULL,
             data_processing_consent TEXT NOT NULL,
             completed INTEGER DEFAULT 0
