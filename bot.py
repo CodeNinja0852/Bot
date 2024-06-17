@@ -6,6 +6,7 @@ from telegram.constants import ParseMode
 from config import BOT_TOKEN
 from database import conn, c
 import os
+
 conn = sqlite3.connect('user_data.db')
 c = conn.cursor()
 
@@ -16,7 +17,6 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 LANGUAGE, START_APP, FULL_NAME, AGE, ADDRESS, PROFICIENCY, PHONE_NUMBER, BIRTHDATE, GENDER, STUDENT_STATUS, EDUCATION, MARITAL_STATUS, WORK_HISTORY, LANGUAGE_SKILLS, AUDIO_INTRODUCTION, POSITIVE_SKILLS, PLATFORM_EXPERIENCE, PLATFORM_DETAILS, SOFTWARE_EXPERIENCE, PHOTO_UPLOAD, SOURCE_INFO, DATA_PROCESSING_CONSENT, CONFIRM = range(23)
-
 
 translations = {
     'start': {
@@ -229,11 +229,14 @@ async def address(update: Update, context: CallbackContext):
 
     context.user_data['address'] = update.message.text
     proficiency_buttons = [
-    [translations['beginner'][lang], translations['intermediate'][lang], translations['advanced'][lang]]]
+        translations['beginner'][lang], 
+        translations['intermediate'][lang], 
+        translations['advanced'][lang]
+    ]
     await update.message.reply_text(
         translations['proficiency'][lang],
         reply_markup=ReplyKeyboardMarkup(
-            [[proficiency_buttons], [back_button(lang), cancel_button(lang)]], 
+            [proficiency_buttons, [back_button(lang), cancel_button(lang)]], 
             resize_keyboard=True, 
             one_time_keyboard=True
         )
