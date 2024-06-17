@@ -20,134 +20,138 @@ LANGUAGE, START_APP, FULL_NAME, AGE, ADDRESS, PROFICIENCY, PHONE_NUMBER, BIRTHDA
 
 translations = {
     'start': {
-        'uz': "In Hunter - ish bilan bog'liq agentlik va boshqalar\n\nSalom! Botimizga xush kelibsiz!",
-        'ru': "In Hunter - рекрутинговое агентство и т.д.\n\nЗдравствуйте! Добро пожаловать в наш бот!",
+        'uz': "In Hunter - ish bilan bog'liq agentlik va boshqalar 🥷 \n\nSalom! Botimizga xush kelibsiz! 👋",
+        'ru': "In Hunter - рекрутинговое агентство и т.д 🥷.\n\nЗдравствуйте! Добро пожаловать в наш бот! 👋",
     },
     'full_name': {
-        'uz': 'Ism, sharifingizni kiriting',
-        'ru': 'Введите Ф.И.О',
+        'uz': 'Ism, sharifingizni kiriting 🙃',
+        'ru': 'Введите Ф.И.О 🙃',
     },
      'age': {
-        'uz': 'Yoshingizni kiriting',
-        'ru': 'Введите свой возраст',
+        'uz': 'Yoshingizni kiriting 👇',
+        'ru': 'Введите свой возраст 👇',
     },
     'proficiency': {
-        'uz': "Boshlang'ich, o'rta, ilg'or",
-        'ru': 'Начинающий, средний, продвинутый',
+        'uz': "Boshlang'ich, o'rta, ilg'or 👇",
+        'ru': 'Начинающий, средний, продвинутый 👇',
     },
     'phone_number': {
-        'uz': 'Telefon raqamingizni kiriting',
-        'ru': 'Введите свой номер телефона',
+        'uz': 'Telefon raqamingizni kiriting 📞',
+        'ru': 'Введите свой номер телефона 📞',
     },
     'birthdate': {
-        'uz': 'Tugʻilgan kuningiz sanasi',
-        'ru': 'Дата вашего рождения',
+        'uz': 'Tugʻilgan kuningiz sanasi 📅',
+        'ru': 'Дата вашего рождения 📅',
     },
     'address': {
-        'uz': 'Yashash manzilingiz',
-        'ru': 'Место проживания',
+        'uz': 'Yashash manzilingiz 🏘',
+        'ru': 'Место проживания 🏘',
     },
     'gender': {
-        'uz': 'Jinsingiz',
-        'ru': 'Пол',
+        'uz': 'Jinsingiz 👇',
+        'ru': 'Пол 👇',
     },
     'student_status': {
-        'uz': 'Siz talaba bo‘lmoqchimisiz? Ha / Yo‘q',
-        'ru': 'Являетесь ли вы студентом? Да / Нет',
+        'uz': 'Siz talaba bo‘lmoqchimisiz 🧑‍🎓? Ha / Yo‘q',
+        'ru': 'Являетесь ли вы студентом 🧑‍🎓? Да / Нет',
     },
     'education': {
-        'uz': 'Maʼlumot? Universitet nomi, fakulteti?',
-        'ru': 'Образование? Наименование университета, факультет?',
+        'uz': 'Maʼlumot? Universitet nomi, fakulteti? 🏫',
+        'ru': 'Образование? Наименование университета, факультет? 🏫',
     },
     'marital_status': {
-        'uz': 'Oilaviy holat? Uylanmoqda, ayollangan, bo‘shanib ketgan, xotin',
-        'ru': 'Семейное положение? Замужем, женат, в разводе, вдова',
+        'uz': 'Oilaviy holat? Uylanmoqda, uylangan, ajrashib ketgan! 👇',
+        'ru': 'Семейное положение? Замужем, женат, в разводе, вдова 👇',
     },
     'work_history': {
-        'uz': 'So‘nggi ish joylar (oxirgi 3 ish joyingizni yozing)',
-        'ru': 'Последние места работы (распишите последние 3 места работы)',
+        'uz': 'So‘nggi ish joylar (oxirgi 3 ish joyingizni yozing) 👇',
+        'ru': 'Последние места работы (распишите последние 3 места работы) 👇',
     },
     'language_skills': {
-        'uz': 'Til bilimi?',
-        'ru': 'Знание языков?',
+        'uz': 'Til bilimi? 🇺🇿',
+        'ru': 'Знание языков? 🇷🇺',
     },
     'audio_introduction': {
-        'uz': 'O‘zingiz haqingizda tinglangan maʼlumot',
-        'ru': 'Расскажите о себе через аудиозапись',
+        'uz': 'O‘zingiz haqingizda tinglangan maʼlumot 👇',
+        'ru': 'Расскажите о себе через аудиозапись 👇',
     },
     'positive_skills': {
-        'uz': 'Sizning qo‘llab-quvvatlovchiniy ko‘nikmalariz',
-        'ru': 'Напишите свои положительные навыки',
+        'uz': 'Ijobiy qobiliyatlaringizni yozing 👇',
+        'ru': 'Напишите свои положительные навыки 👇',
     },
     'platform_experience': {
-        'uz': 'Qaysi platformalarda ishlagansiz?',
-        'ru': 'В каких платформах работали?',
+        'uz': 'Qaysi platformalarda ishlagansiz? 👇',
+        'ru': 'В каких платформах работали? 👇',
     },
     'platform_details': {
-        'uz': 'Iltimos, tafsilotli tarzda yozing (Excel, Word, Canva)',
-        'ru': 'Распишите пожалуйста детально (Excel, Word, Canva)',
+        'uz': 'Iltimos, tafsilotli tarzda yozing (Excel, Word, Canva) 👇',
+        'ru': 'Распишите пожалуйста детально (Excel, Word, Canva) 👇',
     },
     'software_experience': {
-        'uz': 'Qaysi dasturlarda ishlagansiz? (1C, MySQL, SAP)',
-        'ru': 'В каких программах работали? (1C, MySQL, SAP)',
+        'uz': 'Qaysi dasturlarda ishlagansiz? (1C, MySQL, SAP) 👇',
+        'ru': 'В каких программах работали? (1C, MySQL, SAP) 👇',
     },
     'photo_upload': {
-        'uz': 'Iltimos, o‘zingizning rasmingizni yuboring',
-        'ru': 'Отправьте пожалуйста свою фотографию',
+        'uz': 'Iltimos, o‘zingizning rasmingizni yuboring 🖼',
+        'ru': 'Отправьте пожалуйста свою фотографию 🖼',
     },
     'source_info': {
-        'uz': 'Botimiz haqida qayerdan bilib oldingiz?',
-        'ru': 'Откуда узнали про наш Бот?',
+        'uz': 'Botimiz haqida qayerdan bilib oldingiz? 🤖',
+        'ru': 'Откуда узнали про наш Бот? 🤖',
     },
     'data_processing_consent': {
-        'uz': 'Shaxsiy maʼlumotlaringizni ishlashga ruxsat berasizmi? (Ha / Yo‘q)',
-        'ru': 'Даёте ли вы разрешение на обработку личных данных? (Да / Нет)',
+        'uz': 'Shaxsiy maʼlumotlaringizni ishlashga ruxsat berasizmi? (Ha 👍 / Yo‘q 👎)',
+        'ru': 'Даёте ли вы разрешение на обработку личных данных? (Да 👍/ Нет 👎)',
     },
     'confirm': {
-        'uz': 'Iltimos, barchasini to‘g‘ri to‘ldirganingizni tekshiring? (Ha / Yo‘q)',
-        'ru': 'Проверьте пожалуйста, правильно ли вы всё заполнили? (Да / Нет)',
+        'uz': 'Iltimos, barchasini to‘g‘ri to‘ldirganingizni tekshiring? (Ha 👍/ Yo‘q 👎)',
+        'ru': 'Проверьте пожалуйста, правильно ли вы всё заполнили? (Да 👍 / Нет 👎)',
     },
     'thanks': {
-        'uz': "Rahmat! Sizning ma'lumotlaringiz muvaffaqiyatli saqlandi.",
-        'ru': "Спасибо! Ваша информация успешно сохранена.",
+        'uz': "Rahmat! Sizning ma'lumotlaringiz muvaffaqiyatli saqlandi. ☺️",
+        'ru': "Спасибо! Ваша информация успешно сохранена ☺️ .",
     },
     'cancelled': {
-        'uz': "Bekor qilindi.",
-        'ru': "Отменено.",
+        'uz': "Bekor qilindi. ❌",
+        'ru': "Отменено. ❌",
     },
     'beginner': {
-        'ru': 'Начинающий',
-        'uz': 'Boshlovchi'
+        'ru': 'Начинающий 🫤',
+        'uz': 'Boshlovchi 🫤'
     },
     'intermediate': {
-        'ru': 'Средний',
-        'uz': 'Oʻrta'
+        'ru': 'Средний 😑',
+        'uz': 'Oʻrta 😑'
     },
     'advanced': {
-        'ru': 'Продвинутый',
-        'uz': 'Yuqori'
+        'ru': 'Продвинутый 🤗',
+        'uz': 'Yuqori 🤗'
     }
 }
 
-async def start(update: Update, context):
+
+async def start(update: Update, context: CallbackContext):
     await update.message.reply_text(
-        "Iltimos tilni tanlang / Пожалуйста, выберите ваш язык",
-        reply_markup=ReplyKeyboardMarkup([["Uzbek", "Russian"]], resize_keyboard=True, one_time_keyboard=True)
+        "Iltimos tilni tanlang / Пожалуйста, выберите ваш язык 👇",
+        reply_markup=ReplyKeyboardMarkup([["🇺🇿 Uzbek", "🇷🇺 Russian"]], resize_keyboard=True, one_time_keyboard=True)
     )
     return LANGUAGE
 
-async def set_language(update: Update, context):
+async def set_language(update: Update, context: CallbackContext):
     logger.info("Inside set_language handler")
     user_choice = update.message.text
-    if user_choice.lower() in ['uzbek', 'russian']:
-        context.user_data['language'] = 'uz' if user_choice.lower() == 'uzbek' else 'ru'
-        await update.message.reply_text(
-            translations['start'][context.user_data['language']],
-            reply_markup=ReplyKeyboardMarkup([["Start ✍️"]], resize_keyboard=True, one_time_keyboard=True)
-        )
-        return START_APP
+    if 'uzbek' in user_choice.lower():
+        context.user_data['language'] = 'uz'
+    elif 'russian' in user_choice.lower():
+        context.user_data['language'] = 'ru'
     else:
         return await start(update, context)
+
+    await update.message.reply_text(
+        translations['start'][context.user_data['language']],
+        reply_markup=ReplyKeyboardMarkup([["Start ✍️"]], resize_keyboard=True, one_time_keyboard=True)
+    )
+    return START_APP
 
 
 async def start_application(update: Update, context: CallbackContext):
@@ -215,6 +219,10 @@ def back_button(lang):
 
 def cancel_button(lang):
     return 'Отмена ❌' if lang == 'ru' else 'Bekor qilish ❌'
+
+def questions(lang):
+    return 'Botimiz haqida qayerdan bilib oldingiz? 🤖' if lang == 'uz' else 'Откуда узнали про наш Бот? 🤖'
+
 
 
 async def address(update: Update, context: CallbackContext):
@@ -306,7 +314,11 @@ async def gender(update: Update, context):
     yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Ha', 'Yoʻq']
     await update.message.reply_text(
         translations['student_status'][lang],
-        reply_markup=ReplyKeyboardMarkup([[yes_or_no], [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup(
+            [yes_or_no, [back_button(lang), cancel_button(lang)]], 
+            resize_keyboard=True, 
+            one_time_keyboard=True
+        )
     )
     return STUDENT_STATUS
 
@@ -489,6 +501,7 @@ async def software_experience(update: Update, context):
     return PHOTO_UPLOAD
 
 async def photo_upload(update: Update, context: CallbackContext):
+    logger.info("Inside the photo_upload function")
     lang = context.user_data.get('language', 'en')
 
     if update.message.photo:
@@ -497,24 +510,28 @@ async def photo_upload(update: Update, context: CallbackContext):
             file = await context.bot.get_file(file_id)
             file_path = os.path.join('photos', f'{file_id}.jpg')
             os.makedirs('photos', exist_ok=True)
-            await file.download_to_drive(file_path)
+            await file.download_to_drive(file_path)  
             context.user_data['photo_path'] = file_path
+            logger.info("Downloading the image user sent")
+            logger.info("Going to the next step...")
             await update.message.reply_text(
-                reply_markup=ReplyKeyboardMarkup([[back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
+                text='Botimiz haqida qayerdan bilib oldingiz? 🤖' if lang == 'uz' else 'Откуда узнали про наш Бот? 🤖'
             )
-            return SOURCE_INFO 
+            return SOURCE_INFO
 
         except Exception as e:
-            await update.message.reply_text(f" {e}")
-            return PHOTO_UPLOAD 
+           logger.error("Error occurred restarting...")
+           logger.error(e)
+           pass
+           return PHOTO_UPLOAD
 
     else:
-        await update.message.reply_text(
-            reply_markup=ReplyKeyboardRemove()
-        )
-        return PHOTO_UPLOAD 
+        pass
+    return SOURCE_INFO
+
 
 async def source_info(update: Update, context):
+    logger.info("Inside source info function")
     lang = context.user_data['language']
     text = update.message.text.lower()
 
@@ -524,14 +541,20 @@ async def source_info(update: Update, context):
         return await cancel(update, context)
 
     context.user_data['source_info'] = update.message.text
-    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Ha', 'Yoʻq']
+    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Yes', 'No']
+
+    keyboard = [
+        yes_or_no,
+        [back_button(lang), cancel_button(lang)]
+    ]
+
     await update.message.reply_text(
         translations['data_processing_consent'][lang],
-        reply_markup=ReplyKeyboardMarkup([[yes_or_no], [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     )
     return DATA_PROCESSING_CONSENT
 
-async def data_processing_consent(update: Update, context):
+async def data_processing_consent(update: Update, context: CallbackContext):
     lang = context.user_data['language']
     text = update.message.text.lower()
 
@@ -541,12 +564,19 @@ async def data_processing_consent(update: Update, context):
         return await cancel(update, context)
 
     context.user_data['data_processing_consent'] = update.message.text
-    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Ha', 'Yoʻq']
+    yes_or_no = ['Да', 'Нет'] if lang == 'ru' else ['Yes', 'No']
+
+    keyboard = [
+        yes_or_no,
+        [back_button(lang), cancel_button(lang)]
+    ]
+
     await update.message.reply_text(
         translations['confirm'][lang],
-        reply_markup=ReplyKeyboardMarkup([[yes_or_no], [back_button(lang), cancel_button(lang)]], resize_keyboard=True, one_time_keyboard=True)
+        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True, one_time_keyboard=True)
     )
     return CONFIRM
+
 
 async def confirm(update: Update, context: CallbackContext):
     lang = context.user_data['language']
